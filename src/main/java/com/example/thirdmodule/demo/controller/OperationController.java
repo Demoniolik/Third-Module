@@ -1,5 +1,7 @@
 package com.example.thirdmodule.demo.controller;
 
+import com.example.thirdmodule.demo.service.OperationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,10 +12,16 @@ import java.util.List;
 @RestController
 public class OperationController {
     private static final List<String> listOfLastTenOperations= new LinkedList<>();
+    private OperationService operationService;
+
+    @Autowired
+    public OperationController(OperationService operationService) {
+        this.operationService = operationService;
+    }
 
     @RequestMapping("/add")
     public double addNumbers(@RequestParam double one, @RequestParam double two) {
-        double result = one + two;
+        double result = operationService.getAdditionOperationResult(one, two);
         String currentOperation = one + " + " + two + " = " + result;
         addOperations(currentOperation);
         return result;
@@ -21,7 +29,7 @@ public class OperationController {
 
     @RequestMapping("/subtract")
     public double subtractNumbers(@RequestParam double one, @RequestParam double two) {
-        double result = one - two;
+        double result = operationService.getSubtractOperationResult(one, two);
         String currentOperation = one + " - " + two + " = " + result;
         addOperations(currentOperation);
         return result;
@@ -29,7 +37,7 @@ public class OperationController {
 
     @RequestMapping("/multiply")
     public double multiplyNumbers(@RequestParam double one, @RequestParam double two) {
-        double result = one * two;
+        double result = operationService.getMultiplyOperationResult(one, two);
         String currentOperation = one + " * " + two + " = " + result;
         addOperations(currentOperation);
         return result;
@@ -37,10 +45,7 @@ public class OperationController {
 
     @RequestMapping("/divide")
     public double divideNumbers(@RequestParam double one, @RequestParam double two) {
-        if (two == 0) {
-            throw new NumberFormatException("Error. Divison by zero");
-        }
-        double result = one / two;
+        double result = operationService.getDivideOperationResult(one, two);
         String currentOperation = one + " / " + two + " = " + result;
         addOperations(currentOperation);
         return result;
